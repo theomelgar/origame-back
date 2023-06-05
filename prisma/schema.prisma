@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  id        Int         @id(map: "Categories_pk") @default(autoincrement())
+  name      String      @unique
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt DateTime    @default(now()) @db.Timestamp(6)
+  Tutorials Tutorials[]
+}
+
+model Comments {
+  id            Int             @id(map: "Comments_pk") @default(autoincrement())
+  userId        Int
+  tutorialId    Int
+  url           String?
+  likes         Int
+  comment       String
+  createdAt     DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamp(6)
+  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk0")
+  Tutorials     Tutorials       @relation(fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk1")
+  LikesComments LikesComments[]
+}
+
+model Likes {
+  id         Int       @id(map: "Likes_pk") @default(autoincrement())
+  userId     Int
+  tutorialId Int
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime  @default(now()) @db.Timestamp(6)
+  Users      Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk0")
+  Tutorials  Tutorials @relation(fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk1")
+}
+
+model LikesComments {
+  id        Int      @id(map: "LikesComments_pk") @default(autoincrement())
+  userId    Int
+  commentId Int
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "LikesComments_fk0")
+  Comments  Comments @relation(fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "LikesComments_fk1")
+}
+
+model Media {
+  id                                    Int         @id(map: "Media_pk") @default(autoincrement())
+  userId                                Int
+  tutorialId                            Int
+  url                                   String
+  createdAt                             DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt                             DateTime    @default(now()) @db.Timestamp(6)
+  Users                                 Users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Media_fk0")
+  Tutorials_Media_tutorialIdToTutorials Tutorials   @relation("Media_tutorialIdToTutorials", fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Media_fk1")
+  Tutorials_Tutorials_imagesToMedia     Tutorials[] @relation("Tutorials_imagesToMedia")
+}
+
+model Results {
+  id                                      Int         @id(map: "Results_pk") @default(autoincrement())
+  userId                                  Int
+  tutorialId                              Int
+  url                                     String
+  createdAt                               DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt                               DateTime    @default(now()) @db.Timestamp(6)
+  Users                                   Users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Results_fk0")
+  Tutorials_Results_tutorialIdToTutorials Tutorials   @relation("Results_tutorialIdToTutorials", fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Results_fk1")
+  Tutorials_Tutorials_resultIdToResults   Tutorials[] @relation("Tutorials_resultIdToResults")
+}
+
+model Tutorials {
+  id                                    Int        @id(map: "Tutorials_pk") @default(autoincrement())
+  userId                                Int
+  resultId                              Int
+  title                                 String     @db.VarChar
+  description                           String?
+  images                                Int
+  category                              Int
+  createdAt                             DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt                             DateTime   @default(now()) @db.Timestamp(6)
+  Comments                              Comments[]
+  Likes                                 Likes[]
+  Media_Media_tutorialIdToTutorials     Media[]    @relation("Media_tutorialIdToTutorials")
+  Results_Results_tutorialIdToTutorials Results[]  @relation("Results_tutorialIdToTutorials")
+  Users                                 Users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk0")
+  Results_Tutorials_resultIdToResults   Results    @relation("Tutorials_resultIdToResults", fields: [resultId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk1")
+  Media_Tutorials_imagesToMedia         Media      @relation("Tutorials_imagesToMedia", fields: [images], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk2")
+  Categories                            Categories @relation(fields: [category], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk3")
+}
+
+model Users {
+  id            Int             @id(map: "Users_pk") @default(autoincrement())
+  email         String          @unique @db.VarChar
+  password      String          @db.VarChar
+  username      String?         @db.VarChar
+  picture       String?         @default("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Origami-crane.jpg/250px-Origami-crane.jpg")
+  birthday      DateTime?       @db.Date
+  createdAt     DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamp(6)
+  Comments      Comments[]
+  Likes         Likes[]
+  LikesComments LikesComments[]
+  Media         Media[]
+  Results       Results[]
+  Sessions      Sessions[]
+  Tutorials     Tutorials[]
+}
+
+model Sessions {
+  id        Int      @id(map: "Sessions_pk") @default(autoincrement())
+  userId    Int
+  token     String
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Sessions_fk0")
+}
