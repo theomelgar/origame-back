@@ -10,3 +10,13 @@ export type RequestError = {
   name: string;
   message: string;
 };
+
+export type UpsertTutorialInput = {
+  id?: number | null;
+  userId: number;
+  resultUrl: string;
+  title: string;
+  description: string;
+  images: string[]; // Array of image URLs
+  category: string;
+};

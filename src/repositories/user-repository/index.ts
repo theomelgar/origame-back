@@ -1,5 +1,13 @@
-import { Prisma } from '@prisma/client';
-import { prisma } from '../../config';
+import { Prisma, Users } from "@prisma/client";
+import { prisma } from "../../config";
+
+async function getUserById(userId: number): Promise<Users | null> {
+  const user = await prisma.users.findUnique({
+    where: { id: userId },
+  });
+
+  return user;
+}
 
 async function findByEmail(email: string, select?: Prisma.UsersSelect) {
   const params: Prisma.UsersFindUniqueArgs = {
@@ -40,6 +48,7 @@ const userRepository = {
   findByEmail,
   create,
   findByEmailAndToken,
+  getUserById,
 };
 
 export default userRepository;
