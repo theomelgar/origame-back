@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 
 export async function createOrUpdateTutorial(req: Request, res: Response) {
-  const { id } = req.params;
+  const { id } = req.params
   const { userId, resultUrl, title, description, images, category } = req.body;
 
   try {
@@ -16,6 +16,8 @@ export async function createOrUpdateTutorial(req: Request, res: Response) {
       images,
       category,
     });
+    console.log("VOCE ENTROU")
+
     return res.status(httpStatus.CREATED).json(tutorial);
   } catch (error) {
     if (error.name === "NotFoundError") {

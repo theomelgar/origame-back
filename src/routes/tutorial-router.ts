@@ -14,7 +14,7 @@ tutorialsRouter
   .get('/', getAllTutorials)
   .get('/:id', getTutorial)
   .post('/', authenticateToken, validateBody(createTutorialSchema), createOrUpdateTutorial)
-  .put('/:id',authenticateToken, createOrUpdateTutorial)
+  .patch('/:id',authenticateToken, createOrUpdateTutorial)
   .delete('/:id', authenticateToken, deleteTutorial);
 
 export { tutorialsRouter };

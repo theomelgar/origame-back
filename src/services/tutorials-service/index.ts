@@ -6,7 +6,7 @@ import { UpsertTutorialInput } from "@/protocols";
 
 type TutorialInfo = {
   id: number;
-  userId:number;
+  userId: number;
   title: string;
   description: string;
   resultUrl: string;
@@ -18,13 +18,8 @@ type TutorialInfo = {
 export async function createOrUpdateTutorial(
   data: UpsertTutorialInput
 ): Promise<Tutorials> {
-  try {
-    const tutorial = await tutorialRepository.createOrUpdateTutorial(data);
-    return tutorial;
-  } catch (error) {
-    // Handle any errors here
-    throw error;
-  }
+  const tutorial = await tutorialRepository.createOrUpdateTutorial(data);
+  return tutorial;
 }
 
 async function getAllTutorials(): Promise<TutorialInfo[]> {
@@ -34,7 +29,9 @@ async function getAllTutorials(): Promise<TutorialInfo[]> {
   for (const tutorial of tutorials) {
     const images = await tutorialRepository.getImagesById(tutorial.id);
     const resultUrl = await tutorialRepository.getResultById(tutorial.resultId);
-    const category = await tutorialRepository.getCategoryById(tutorial.categoryId);
+    const category = await tutorialRepository.getCategoryById(
+      tutorial.categoryId
+    );
 
     const tutorialInfo: TutorialInfo = {
       id: tutorial.id,
@@ -58,11 +55,13 @@ async function getTutorialById(id: number): Promise<TutorialInfo> {
   if (!tutorial) throw notFoundError();
   const images = await tutorialRepository.getImagesById(tutorial.id);
   const resultUrl = await tutorialRepository.getResultById(tutorial.resultId);
-  const category = await tutorialRepository.getCategoryById(tutorial.categoryId);
+  const category = await tutorialRepository.getCategoryById(
+    tutorial.categoryId
+  );
 
   const tutorialInfo = {
     id: tutorial.id,
-    userId:tutorial.userId,
+    userId: tutorial.userId,
     title: tutorial.title,
     description: tutorial.description,
     resultUrl,

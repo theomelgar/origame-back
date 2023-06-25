@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function getTutorial() {
   const tutorials: Tutorials[] = await prisma.tutorials.findMany({
     orderBy: {
-      updatedAt: 'desc',
+      updatedAt: "desc",
     },
   });
 
@@ -67,6 +67,17 @@ export async function createOrUpdateTutorial(
         categoryId: existingCategory?.id ?? newCategory.id,
       },
     });
+    const mediaPromises = images.map((imageUrl) =>
+      prisma.media.create({
+        data: {
+          userId,
+          tutorialId: tutorial.id,
+          url: imageUrl,
+        },
+      })
+    );
+
+    await Promise.all(mediaPromises);
   } else {
     // If ID is provided, update the existing tutorial
     tutorial = await prisma.tutorials.update({
@@ -86,19 +97,6 @@ export async function createOrUpdateTutorial(
       },
     });
   }
-
-  // Save the tutorial images
-  const mediaPromises = images.map((imageUrl) =>
-    prisma.media.create({
-      data: {
-        userId,
-        tutorialId: tutorial.id,
-        url: imageUrl,
-      },
-    })
-  );
-
-  await Promise.all(mediaPromises);
 
   return tutorial;
 }
