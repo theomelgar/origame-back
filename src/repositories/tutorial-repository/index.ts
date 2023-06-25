@@ -48,7 +48,6 @@ export async function createOrUpdateTutorial(
       var newCategory = await prisma.categories.create({
         data: { name: category.toLowerCase() },
       });
-      console.log(result);
 
       result = await prisma.results.create({
         data: {

@@ -16,8 +16,6 @@ export async function createOrUpdateTutorial(req: Request, res: Response) {
       images,
       category,
     });
-    console.log("VOCE ENTROU")
-
     return res.status(httpStatus.CREATED).json(tutorial);
   } catch (error) {
     if (error.name === "NotFoundError") {
