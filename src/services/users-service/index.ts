@@ -27,7 +27,13 @@ async function validateUniqueEmailOrFail(email: string) {
 }
 
 
-export type CreateUserParams = Omit<Users, 'id'|'createdAt'|'updatedAt' >;
+export type CreateUserParams = {
+  email: string;
+    password: string;
+    username?: string;
+    picture?: string;
+    birthday?: Date;
+};
 
 const userService = {
   createUser,

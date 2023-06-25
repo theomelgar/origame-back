@@ -24,7 +24,7 @@ model Comments {
   comment       String
   createdAt     DateTime        @default(now()) @db.Timestamp(6)
   updatedAt     DateTime        @default(now()) @db.Timestamp(6)
-  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk0")
+  Users         Users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Comments_fk0")
   Tutorials     Tutorials       @relation(fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_fk1")
   LikesComments LikesComments[]
 }
@@ -35,7 +35,7 @@ model Likes {
   tutorialId Int
   createdAt  DateTime  @default(now()) @db.Timestamp(6)
   updatedAt  DateTime  @default(now()) @db.Timestamp(6)
-  Users      Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk0")
+  Users      Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Likes_fk0")
   Tutorials  Tutorials @relation(fields: [tutorialId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Likes_fk1")
 }
 
@@ -45,7 +45,7 @@ model LikesComments {
   commentId Int
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @db.Timestamp(6)
-  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "LikesComments_fk0")
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "LikesComments_fk0")
   Comments  Comments @relation(fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "LikesComments_fk1")
 }
 
@@ -56,7 +56,7 @@ model Media {
   url                 String
   createdAt           DateTime    @default(now()) @db.Timestamp(6)
   updatedAt           DateTime    @default(now()) @db.Timestamp(6)
-  Users               Users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Media_fk0")
+  Users               Users       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Media_fk0")
   Tutorials            Tutorials   @relation("Media_tutorialIdToTutorials", fields: [tutorialId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Media_fk1")
 }
 
@@ -66,7 +66,7 @@ model Results {
   url                                     String
   createdAt                               DateTime    @default(now()) @db.Timestamp(6)
   updatedAt                               DateTime    @default(now()) @db.Timestamp(6)
-  Users                                   Users       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Results_fk0")
+  Users                                   Users       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Results_fk0")
   Tutorials_Tutorials_resultIdToResults   Tutorials[] @relation("Tutorials_resultIdToResults")
 }
 
@@ -82,7 +82,7 @@ model Tutorials {
   Comments                              Comments[]
   Likes                                 Likes[]
   Media                                 Media[]    @relation("Media_tutorialIdToTutorials")
-  Users                                 Users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk0")
+  Users                                 Users      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Tutorials_fk0")
   Results_Tutorials_resultIdToResults   Results    @relation("Tutorials_resultIdToResults", fields: [resultId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk1")
   Categories                            Categories @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Tutorials_fk3")
 }
@@ -111,5 +111,5 @@ model Sessions {
   token     String
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @db.Timestamp(6)
-  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Sessions_fk0")
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Sessions_fk0")
 }
