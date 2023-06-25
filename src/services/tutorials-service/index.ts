@@ -1,10 +1,22 @@
-import { Tutorials } from '@prisma/client';
-import { notFoundError } from '@/errors';
-import userRepository from '@/repositories/user-repository';
-import tutorialRepository from '@/repositories/tutorial-repository';
-import { UpsertTutorialInput } from '@/protocols';
+import { Tutorials } from "@prisma/client";
+import { notFoundError } from "@/errors";
+import userRepository from "@/repositories/user-repository";
+import tutorialRepository from "@/repositories/tutorial-repository";
+import { UpsertTutorialInput } from "@/protocols";
 
-export async function createOrUpdateTutorial(data: UpsertTutorialInput): Promise<Tutorials> {
+type TutorialInfo = {
+  id: number;
+  title: string;
+  description: string;
+  resultUrl: string;
+  images: object;
+  category: string;
+  createdAt: Date;
+};
+
+export async function createOrUpdateTutorial(
+  data: UpsertTutorialInput
+): Promise<Tutorials> {
   try {
     const tutorial = await tutorialRepository.createOrUpdateTutorial(data);
     return tutorial;
@@ -14,19 +26,49 @@ export async function createOrUpdateTutorial(data: UpsertTutorialInput): Promise
   }
 }
 
-async function getAllTutorial(): Promise<Tutorials[]> {
-  const tutorial = await tutorialRepository.getTutorial();
+async function getAllTutorials(): Promise<TutorialInfo[]> {
+  const tutorials = await tutorialRepository.getTutorial();
+  const tutorialInfoList: TutorialInfo[] = [];
 
-  return tutorial;
+  for (const tutorial of tutorials) {
+    const images = await tutorialRepository.getImagesById(tutorial.id);
+    const resultUrl = await tutorialRepository.getResultById(tutorial.resultId);
+    const category = await tutorialRepository.getCategoryById(tutorial.categoryId);
+
+    const tutorialInfo: TutorialInfo = {
+      id: tutorial.id,
+      title: tutorial.title,
+      description: tutorial.description,
+      resultUrl,
+      images,
+      category,
+      createdAt: tutorial.createdAt,
+    };
+
+    tutorialInfoList.push(tutorialInfo);
+  }
+
+  return tutorialInfoList;
 }
 
-async function getTutorialById(id: number): Promise<Tutorials> {
+async function getTutorialById(id: number): Promise<TutorialInfo> {
   const tutorial = await tutorialRepository.getTutorialById(id);
   if (!tutorial) throw notFoundError();
+  const images = await tutorialRepository.getImagesById(tutorial.id);
+  const resultUrl = await tutorialRepository.getResultById(tutorial.resultId);
+  const category = await tutorialRepository.getCategoryById(tutorial.categoryId);
 
-  return tutorial;
+  const tutorialInfo = {
+    id: tutorial.id,
+    title: tutorial.title,
+    description: tutorial.description,
+    resultUrl,
+    images,
+    category,
+    createdAt: tutorial.createdAt,
+  };
+  return tutorialInfo;
 }
-
 
 async function deleteTutorial(userId: number, id: number): Promise<Tutorials> {
   const user = await userRepository.getUserById(userId);
@@ -41,7 +83,7 @@ async function deleteTutorial(userId: number, id: number): Promise<Tutorials> {
 }
 
 const tutorialService = {
-  getAllTutorial,
+  getAllTutorials,
   getTutorialById,
   createOrUpdateTutorial,
   deleteTutorial,

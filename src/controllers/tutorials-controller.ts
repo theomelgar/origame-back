@@ -29,7 +29,7 @@ export async function createOrUpdateTutorial(req: Request, res: Response) {
 }
 export async function getTutorial(req: Request, res: Response) {
   const { id } = req.params;
-
+  
   try {
     const tutorial = await tutorialService.getTutorialById(Number(id));
 
@@ -47,7 +47,7 @@ export async function getTutorial(req: Request, res: Response) {
 
 export async function getAllTutorials(req: Request, res: Response) {
   try {
-    const tutorials = await tutorialService.getAllTutorial();
+    const tutorials = await tutorialService.getAllTutorials();
 
     return res.status(httpStatus.OK).json(tutorials);
   } catch (error) {

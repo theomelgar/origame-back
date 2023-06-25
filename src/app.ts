@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import cors from "cors";
 
 import { loadEnv, connectDb, disconnectDB } from "./config";
-import { authenticationRouter, tutorialsRouter, usersRouter } from "./routes";
+import { authGoogle, authenticationRouter, tutorialsRouter, usersRouter } from "./routes";
 
 loadEnv();
 
@@ -13,6 +13,7 @@ app
   .get("/health", (_req, res) => res.send("OK!"))
   .use('/users', usersRouter)
   .use('/auth', authenticationRouter)
+  .use('/google-sign-in', authGoogle)
   .use('/tutorial', tutorialsRouter);
 export function init(): Promise<Express> {
   connectDb();

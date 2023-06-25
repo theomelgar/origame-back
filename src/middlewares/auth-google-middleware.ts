@@ -7,7 +7,6 @@ import authenticationService from '../services/authentication-service';
 
 export async function authGoogleSignIn(req: Request, res: Response) {
   const { idToken, accessToken } = req.body;
-
   try {
     const client = new OAuth2Client(process.env.ACCESS_TOKEN);
     const ticket = await client.verifyIdToken({
@@ -22,17 +21,19 @@ export async function authGoogleSignIn(req: Request, res: Response) {
 
     const response = await userRepository.findByEmailAndToken(payload.email);
     if (response) return res.send({ token: response.Sessions[0].token });
-
     const user = await userRepository.create({
       email: payload.email,
       password: payload.at_hash,
+      picture:payload.picture,
+      birthday:null,
+      username:payload.name,
     });
 
     const token = await authenticationService.createSession(user.id);
 
     res.send({ token });
   } catch (err) {
-    console.log(err);
+    console.log(req.body);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
   }
 }

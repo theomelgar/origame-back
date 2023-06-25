@@ -1,5 +1,6 @@
 import { Prisma, Users } from "@prisma/client";
 import { prisma } from "../../config";
+import { CreateUserParams } from "@/services/users-service";
 
 async function getUserById(userId: number): Promise<Users | null> {
   const user = await prisma.users.findUnique({
@@ -23,10 +24,11 @@ async function findByEmail(email: string, select?: Prisma.UsersSelect) {
   return prisma.users.findUnique(params);
 }
 
-async function create(data: Prisma.UsersUncheckedCreateInput) {
-  return prisma.users.create({
+async function create(data: CreateUserParams) {
+  const result = prisma.users.create({
     data,
   });
+  return result
 }
 
 async function findByEmailAndToken(email: string) {

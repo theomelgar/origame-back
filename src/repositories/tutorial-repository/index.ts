@@ -4,9 +4,12 @@ import dayjs from "dayjs";
 
 const prisma = new PrismaClient();
 
-
 export async function getTutorial() {
-  const tutorials = await prisma.tutorials.findMany();
+  const tutorials = await prisma.tutorials.findMany({
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
 
   return tutorials;
 }
@@ -21,7 +24,9 @@ export async function getTutorialById(id: number): Promise<Tutorials | null> {
   return tutorial;
 }
 
-export async function createOrUpdateTutorial(data: UpsertTutorialInput): Promise<Tutorials> {
+export async function createOrUpdateTutorial(
+  data: UpsertTutorialInput
+): Promise<Tutorials> {
   const { id, userId, resultUrl, title, description, images, category } = data;
   let tutorial: Tutorials;
   let result: Results;
@@ -62,7 +67,6 @@ export async function createOrUpdateTutorial(data: UpsertTutorialInput): Promise
         categoryId: existingCategory?.id ?? newCategory.id,
       },
     });
-    
   } else {
     // If ID is provided, update the existing tutorial
     tutorial = await prisma.tutorials.update({
@@ -99,6 +103,32 @@ export async function createOrUpdateTutorial(data: UpsertTutorialInput): Promise
   return tutorial;
 }
 
+export async function getImagesById(tutorialId: number) {
+  const images = await prisma.media.findMany({
+    where: {
+      tutorialId: tutorialId,
+    },
+  });
+  return images;
+}
+
+export async function getResultById(id: number) {
+  const result = await prisma.results.findFirst({
+    where: {
+      id: id,
+    },
+  });
+  return result.url;
+}
+
+export async function getCategoryById(id: number) {
+  const result = await prisma.categories.findFirst({
+    where: {
+      id: id,
+    },
+  });
+  return result.name;
+}
 export async function deleteTutorial(id: number): Promise<Tutorials | null> {
   const tutorial = await prisma.tutorials.delete({
     where: {
@@ -114,6 +144,9 @@ const TutorialRepository = {
   getTutorial,
   getTutorialById,
   deleteTutorial,
+  getImagesById,
+  getResultById,
+  getCategoryById,
 };
 
 export default TutorialRepository;
