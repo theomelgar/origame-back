@@ -6,6 +6,7 @@ import { UpsertTutorialInput } from "@/protocols";
 
 type TutorialInfo = {
   id: number;
+  userId:number;
   title: string;
   description: string;
   resultUrl: string;
@@ -37,6 +38,7 @@ async function getAllTutorials(): Promise<TutorialInfo[]> {
 
     const tutorialInfo: TutorialInfo = {
       id: tutorial.id,
+      userId: tutorial.userId,
       title: tutorial.title,
       description: tutorial.description,
       resultUrl,
@@ -60,6 +62,7 @@ async function getTutorialById(id: number): Promise<TutorialInfo> {
 
   const tutorialInfo = {
     id: tutorial.id,
+    userId:tutorial.userId,
     title: tutorial.title,
     description: tutorial.description,
     resultUrl,

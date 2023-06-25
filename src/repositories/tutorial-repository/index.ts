@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 const prisma = new PrismaClient();
 
 export async function getTutorial() {
-  const tutorials = await prisma.tutorials.findMany({
+  const tutorials: Tutorials[] = await prisma.tutorials.findMany({
     orderBy: {
       updatedAt: 'desc',
     },
