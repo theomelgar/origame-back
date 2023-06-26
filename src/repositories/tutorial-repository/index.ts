@@ -1,13 +1,12 @@
+import { prisma } from "@/config";
 import { UpsertTutorialInput } from "@/protocols";
-import { PrismaClient, Results, Tutorials } from "@prisma/client";
+import { Results, Tutorials } from "@prisma/client";
 import dayjs from "dayjs";
-
-const prisma = new PrismaClient();
 
 export async function getTutorial() {
   const tutorials: Tutorials[] = await prisma.tutorials.findMany({
     orderBy: {
-      updatedAt: "desc",
+      updatedAt: 'desc',
     },
   });
 
