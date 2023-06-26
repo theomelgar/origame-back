@@ -6,12 +6,12 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc -p tsconfig.build.json",
-    "start": "npm run prisma:migrate:run && node dist/server.js",
+    "start": "npm run prisma:migrate:deploy && node dist/server.js",
     "migration:run": "prisma migrate deploy",
     "migration:generate": "npm run dev:load-envs prisma migrate dev",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
-    "test": "cross-env NODE_ENV=test migrate:run jest --passWithNoTests --runInBand",
+    "test": "cross-env NODE_ENV=test prisma:migrate:deploy jest --passWithNoTests --runInBand",
     "test:coverage": "cross-env NODE_ENV=test jest --passWithNoTests --runInBand --coverage --collectCoverageFrom='./src/**'",
     "test:migration:run": "npm run test:load-envs prisma migrate deploy",
     "test:migration:generate": "npm run test:load-envs prisma migrate dev",
@@ -23,7 +23,9 @@
     "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
     "dev:seed": "npm run dev:load-envs prisma db seed",
     "dev": "cross-env NODE_ENV=development nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
-    "stress": "autocannon -c 1000 -d 30 --renderStatusCodes --latency --warmup [ -c 1 -d 2] localhost:4000/tutorial"
+    "stress": "autocannon -c 1000 -d 30 --renderStatusCodes --latency --warmup [ -c 1 -d 2] localhost:4000/tutorial",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
